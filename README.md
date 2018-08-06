@@ -20,7 +20,7 @@ for mobile viewing:
 >> 
 >> -----
 >> 
->> I am a bot. [Feedback](https://www.reddit.com/message/compose/?to=jd_paton) (or message [/u/jd_paton](https://www.reddit.com/user/jd_paton)) | [GitHub](https://github.com/JohnPaton/nbviewerbot) | [Author](https://johnpaton.net/)
+>> I am a bot. [Feedback](https://www.reddit.com/message/compose/?to=jd_paton) | [GitHub](https://github.com/JohnPaton/nbviewerbot) | [Author](https://johnpaton.net/)
 
 
 ## Installation
