@@ -121,7 +121,7 @@ except FileNotFoundError:
 # Subreddit lists
 SUBREDDITS_TEST = [
     'testingground4bots',
-    'BotTestingPlace',
+    'bottestingplace',
     'bottesting',
     'bottest',
 ]
@@ -132,5 +132,6 @@ with open(SUBREDDITS_RELEVANT_PATH, 'r') as h:
     # strip whitespace and drop empty lines
     SUBREDDITS_RELEVANT = [sub.strip() for sub in _raw]
     SUBREDDITS_RELEVANT = [sub for sub in SUBREDDITS_RELEVANT if sub]
+    SUBREDDITS_RELEVANT += SUBREDDITS_TEST
 
 SUBREDDITS_ALL = ['all']

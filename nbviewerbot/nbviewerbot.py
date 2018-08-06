@@ -111,8 +111,9 @@ def main(subreddits):
 @click.option('--subreddit-set', '-s', default='relevant',
               type=click.Choice(['relevant', 'test', 'all']),
               help='Set of subreddits to use. Options: "relevant" '
-                   '(default, only relevant subreddits), "all" (/r/all), '
-                   ' or "test" (bot testing subreddits). Use the '
+                   '(default, relevant subreddits + bot test subs), '
+                   '"all" (/r/all), '
+                   ' or "test" (only bot testing subreddits). Use the '
                    '"nbviewerbot subreddits" command to view the complete '
                    'lists.')
 @click.option('--env', '-e',
