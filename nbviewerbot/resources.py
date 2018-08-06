@@ -80,7 +80,8 @@ _comment_footer = """
 ------
 
 ^(I am a bot.) 
-[^(Feedback)](https://www.reddit.com/message/compose/?to=jd_paton) ^(|) 
+[^(Feedback)](https://www.reddit.com/message/compose/?to=jd_paton) 
+^((or message /u/jd_paton)) ^(|) 
 [^(GitHub)](https://github.com/JohnPaton/nbviewerbot) ^(|) 
 [^(Author)](https://johnpaton.net/)
 
