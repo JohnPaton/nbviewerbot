@@ -16,7 +16,6 @@ setup(
     install_requires=[
         'praw',
         'bs4',
-        'lxml',
         'python-dotenv',
         'click',
         'backoff',

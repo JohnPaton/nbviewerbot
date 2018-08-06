@@ -84,7 +84,7 @@ def get_all_links(html):
     list[str] : the found URLs (if any)
 
     """
-    soup = BeautifulSoup(html, features="lxml")
+    soup = BeautifulSoup(html, features="html.parser")
     links = soup.find_all('a', attrs={'href': resources.URL_RX})
     return [link.get('href') for link in links]
 
