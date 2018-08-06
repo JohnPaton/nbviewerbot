@@ -46,7 +46,7 @@ $ nbviewerbot
 2018-08-05 11:35:43,730 INFO - Started nbviewerbot, listening for new comments...
 ```
 
-To view the available subreddit lists, use the command `nbviewerbot subreddits`. 
+To view the available subreddit lists, use the command `nbviewerbot subreddits`. The default list is the testing list plus a [list of relevant subreddits](https://github.com/JohnPaton/nbviewerbot/blob/master/nbviewerbot/resources.d/subreddits.txt). Additions to this list would be welcome, feel free to open a PR!
 
 For more details on the command line interface, please use the `--help` argument:
 
