@@ -39,11 +39,23 @@ If you want to run the tests, you can do so with `pytest` (for your current envi
 
 ## Usage
 Once you have `pip` installed `nbviewerbot`, you can run it from the command line with the command `nbviewerbot`. This will watch a default list of relevant subreddits for comments containing GitHub links to Jupyter Notebooks, and reply to them with a comment containing a nbviewer link for each Jupyter link in the parent. 
+
 ```
 $ nbviewerbot
-2018-08-05 11:35:43,729 INFO - Successfully authenticated with Reddit
-2018-08-05 11:35:43,729 INFO - Streaming comments from algotrading+analytics+askmath+askprogramming+aws+beginnerprojects+bigdata+bioinformatics+businessintelligence+codeprojects+computervision+coolgithubprojects+cs231n+datacleaning+dataisbeautiful+datamining+datascience+datasciencenews+deepdream+deeplearners+deeplearning+github+ipynb+ipython+jupyter+jupyternotebooks+languagetechnology+learnmachinelearning+learnprogramming+learnpython+machinelearning+mlquestions+nlp+programming+pyfinance+pystats+python+pythontips+rstats+science+simulate+statistics+tensorflow
-2018-08-05 11:35:43,730 INFO - Started nbviewerbot, listening for new comments...
+2018-08-06 18:35:43,729 INFO - Successfully authenticated with Reddit
+2018-08-06 18:35:43,729 INFO - Streaming comments from algotrading+analytics+askmath+askprogramming+aws+beginnerprojects+bigdata+bioinformatics+businessintelligence+codeprojects+computervision+coolgithubprojects+cs231n+datacleaning+dataisbeautiful+datamining+datascience+datasciencenews+deepdream+deeplearners+deeplearning+github+ipynb+ipython+jupyter+jupyternotebooks+languagetechnology+learnmachinelearning+learnprogramming+learnpython+machinelearning+mlquestions+nlp+programming+pyfinance+pystats+python+pythontips+rstats+science+simulate+statistics+tensorflow
+2018-08-06 18:35:43,730 INFO - Started nbviewerbot, listening for new comments...
+2018-08-06 19:48:17,441 INFO - Found Jupyter link(s) in comment e3ponr7
+2018-08-06 19:48:18,330 INFO - Replied to e3ponr7 with new comment e3poo22
+```
+
+You can stop the bot again by pressing `ctrl+C`. This will interrupt the loop, prompting the bot to save its state (preventing it from replying to the same comments again on next startup) and exit.
+
+```
+^C
+Aborted!
+2018-08-06 20:09:43,520 INFO - Saving reply log...
+2018-08-06 20:09:43,522 INFO - Exited nbviewerbot
 ```
 
 To view the available subreddit lists, use the command `nbviewerbot subreddits`. The default list is the testing list plus a [list of relevant subreddits](https://github.com/JohnPaton/nbviewerbot/blob/master/nbviewerbot/resources.d/subreddits.txt). Additions to this list would be welcome, feel free to open a PR!
