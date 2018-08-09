@@ -11,7 +11,10 @@ from nbviewerbot import resources, utils, templating
 
 
 def get_comment_stream(subreddits):
-    """Return the comment stream for a list of subreddit names"""
+    """Return the comment stream for a subreddit or list of subreddit names"""
+    if type(subreddits) is str:
+        subreddits = [subreddits]
+
     reddit = resources.load_reddit()
     subreddit_str = '+'.join(subreddits)
     sub = reddit.subreddit(subreddit_str)
