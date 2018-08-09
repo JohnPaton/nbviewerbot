@@ -41,8 +41,7 @@ def is_github_jupyter_url(url):
     parsed = parse_url_if_not_parsed(url)
 
     return (
-        'github' in parsed.netloc.lower()
-        and '.ipynb' in parsed.path.lower()
+        "github" in parsed.netloc.lower() and ".ipynb" in parsed.path.lower()
     )
 
 
@@ -68,7 +67,7 @@ def get_notebook_path(url):
 
     """
     parsed = parse_url_if_not_parsed(url)
-    return parsed.netloc.replace('www.', '') + parsed.path
+    return parsed.netloc.replace("www.", "") + parsed.path
 
 
 def get_all_links(html):
@@ -85,8 +84,8 @@ def get_all_links(html):
 
     """
     soup = BeautifulSoup(html, features="html.parser")
-    links = soup.find_all('a', attrs={'href': resources.URL_RX})
-    return [link.get('href') for link in links]
+    links = soup.find_all("a", attrs={"href": resources.URL_RX})
+    return [link.get("href") for link in links]
 
 
 def get_github_jupyter_links(html):
@@ -124,10 +123,10 @@ def setup_logger(console_level=logging.INFO, file_level=logging.DEBUG):
     -------
     logger
     """
-    logger = logging.getLogger('nbviewerbot')
+    logger = logging.getLogger("nbviewerbot")
     logger.setLevel(logging.DEBUG)
 
-    fmt = logging.Formatter('%(asctime)s %(levelname)s - %(message)s')
+    fmt = logging.Formatter("%(asctime)s %(levelname)s - %(message)s")
 
     if console_level is not None:
         sh = logging.StreamHandler()
@@ -148,6 +147,6 @@ def pickle_reply_dict():
     """
     Pickle resources.REPLY_DICT to resources.REPLY_DICT_PATH.
     """
-    resources.LOGGER.info('Saving reply log...')
-    with open(resources.REPLY_DICT_PATH, 'wb') as h:
+    resources.LOGGER.info("Saving reply log...")
+    with open(resources.REPLY_DICT_PATH, "wb") as h:
         pickle.dump(resources.REPLY_DICT, h)

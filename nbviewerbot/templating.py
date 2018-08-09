@@ -16,7 +16,7 @@ def comment_single_link(url):
 def comment_multi_link(urls):
     """Construct the multi-link bot comment reply for the given list of urls"""
     links = [nbviewer_url(url) for url in urls]
-    links_string = '\n\n'.join(links)
+    links_string = "\n\n".join(links)
     return resources.COMMENT_TEMPLATE_MULTI.format(links_string)
 
 
