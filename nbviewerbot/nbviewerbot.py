@@ -4,7 +4,8 @@ from pprint import pformat
 
 import click
 import backoff
-import praw
+import praw.exceptions
+import prawcore.exceptions
 import dotenv
 
 from nbviewerbot import resources, utils, templating
@@ -26,7 +27,10 @@ def get_comment_stream(subreddits):
 
 @backoff.on_exception(
     backoff.expo,
-    exception=praw.exceptions.APIException,
+    exception=(
+        praw.exceptions.PRAWException,
+        prawcore.exceptions.PrawcoreException,
+    ),
     on_backoff=lambda x: resources.LOGGER.exception(
         "Rate Limit Exception replying to comment {}, sleeping. Details: {}".format(
             x["args"][0].id, str(x)
@@ -34,7 +38,7 @@ def get_comment_stream(subreddits):
     ),
 )
 def post_comment_reply(comment, text):
-    """Reply to comment with text. Will back off on rate limit exception.
+    """Reply to comment with text. Will back off on PRAW exceptions.
 
     See also: templating.comment
     """
