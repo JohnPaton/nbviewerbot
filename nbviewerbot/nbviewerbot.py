@@ -30,9 +30,10 @@ def get_comment_stream(subreddits):
     exception=(
         praw.exceptions.PRAWException,
         prawcore.exceptions.PrawcoreException,
+        prawcore.exceptions.ResponseException,
     ),
     on_backoff=lambda x: resources.LOGGER.exception(
-        "Rate Limit Exception replying to comment {}, sleeping. Details: {}".format(
+        "Exception replying to comment {}, sleeping. Details: {}".format(
             x["args"][0].id, str(x)
         )
     ),
