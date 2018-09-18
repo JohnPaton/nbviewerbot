@@ -12,7 +12,6 @@ computervision
 coolgithubprojects
 cs231n
 datacleaning
-dataisbeautiful
 datamining
 datascience
 datasciencenews
