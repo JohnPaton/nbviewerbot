@@ -19,6 +19,7 @@ deepdream
 deeplearners
 deeplearning
 github
+investing
 ipynb
 ipython
 jupyter
