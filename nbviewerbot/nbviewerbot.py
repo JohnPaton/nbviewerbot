@@ -44,7 +44,7 @@ def get_comment_stream(subreddits):
         )
     ),
     on_giveup=lambda x: resources.LOGGER.exception(
-        "Max tries, giving up on comment {}. Details: {}".format(
+        "Max retries reached, giving up on comment {}. Details: {}".format(
             x["args"][0].id, str(x)
         )
     ),
