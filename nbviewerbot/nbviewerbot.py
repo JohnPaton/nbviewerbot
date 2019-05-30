@@ -1,10 +1,13 @@
 import logging
 import atexit
 from pprint import pformat
+import multiprocessing.dummy as mp
+import sys
 
 import click
 import backoff
 import praw.exceptions
+import praw.models
 import prawcore.exceptions
 import dotenv
 
@@ -20,8 +23,9 @@ _PRAW_EXCEPTIONS = (
 )
 
 
-def get_comment_stream(subreddits):
-    """Return the comment stream for a subreddit or list of subreddit names"""
+def get_streams(subreddits):
+    """Return the comment and submission streams for a subreddit or list of
+    subreddit names"""
     if type(subreddits) is str:
         subreddits = [subreddits]
 
@@ -31,7 +35,28 @@ def get_comment_stream(subreddits):
 
     resources.LOGGER.info("Streaming comments from {}".format(subreddit_str))
 
-    return sub.stream.comments()
+    return sub.stream.comments(), sub.stream.submissions()
+
+
+def get_comment_jupyter_links(comment):
+    """Extract jupyter lins from a comment, if any"""
+    html = comment.body_html
+    jupy_links = utils.get_github_jupyter_links(html)
+    return jupy_links
+
+
+def get_submission_jupyter_links(submission):
+    """Extract jupyer links from a submission, if any"""
+    jupy_links = []
+    if submission.selftext_html is not None:
+        # self post, read html
+        html = submission.selftext_html
+        jupy_links += utils.get_github_jupyter_links(html)
+
+    if utils.is_github_jupyter_url(submission.url):
+        jupy_links += [submission.url]
+
+    return jupy_links
 
 
 @backoff.on_exception(
@@ -49,43 +74,49 @@ def get_comment_stream(subreddits):
         )
     ),
 )
-def post_comment_reply(comment, text):
-    """Reply to comment with text. Will back off on PRAW exceptions.
+def post_reply(praw_obj, text):
+    """Reply to a comment or submisson with text. Will back off on
+    PRAW exceptions.
 
     See also: templating.comment
     """
-    reply = comment.reply(text)
+    reply = praw_obj.reply(text)
+    obj_type = utils.praw_object_type(praw_obj)
     resources.LOGGER.info(
-        "Replied to {} with new comment {}".format(comment.id, reply.id)
+        "Replied to {} {} with new comment {}".format(obj_type, praw_obj.id, reply.id)
     )
     return reply
 
 
-def process_comment(comment):
-    """Check a comment for Jupyter GitHub links and reply if haven't already."""
+def process_praw_object(praw_obj):
+    """Check a praw object for Jupyter GitHub links and reply if
+    haven't already."""
     logger = resources.LOGGER
+    obj_type = utils.praw_object_type(praw_obj)
+    obj_id = praw_obj.id
 
-    logger.debug("Got new comment {}".format(comment.id))
-
-    comment_id = comment.id
+    logger.debug("Processing {} {}".format(obj_type, obj_id))
 
     # don't reply to comments more than once
-    if comment_id in resources.REPLY_DICT:
-        logger.debug("Skipping {}, already replied".format(comment_id))
+    if obj_id in resources.REPLY_DICT:
+        logger.debug("Skipping {} {}, already replied".format(obj_type, obj_id))
         return
 
-    comment_html = comment.body_html
-    jupy_links = utils.get_github_jupyter_links(comment_html)
+    jupy_links = []
+    if isinstance(praw_obj, praw.models.Comment):
+        jupy_links = get_comment_jupyter_links(praw_obj)
+    elif isinstance(praw_obj, praw.models.Submission):
+        jupy_links = get_submission_jupyter_links(praw_obj)
 
     if jupy_links:
-        logger.info("Found Jupyter link(s) in comment {}".format(comment_id))
+        logger.info("Found Jupyter link(s) in {} {}".format(obj_type, obj_id))
 
         reply_text = templating.comment(jupy_links)
 
         # use function for posting comment to catch rate limit exceptions
-        reply = post_comment_reply(comment, reply_text)
+        reply = post_reply(praw_obj, reply_text)
 
-        resources.REPLY_DICT[comment_id] = reply
+        resources.REPLY_DICT[obj_id] = reply
 
 
 def main(subreddits):
@@ -101,23 +132,49 @@ def main(subreddits):
     """
 
     logger = resources.LOGGER
-    comments = get_comment_stream(subreddits)
+    comments, submissions = get_streams(subreddits)
+    main_queue = mp.Queue(1024)
+    stop_event = mp.Event()  # for stopping workers
 
     # save the reply dict when the script exits
     atexit.register(lambda: logger.info("Exited nbviewerbot"))
     atexit.register(utils.pickle_reply_dict)
 
+    # create workers to add praw objects to the queue
+    workers = []
+    comments_worker = mp.DummyProcess(
+        name="CommentWorker",
+        target=utils.load_queue,
+        args=(main_queue, comments, stop_event),
+    )
+    workers.append(comments_worker)
+
+    submissions_worker = mp.DummyProcess(
+        name="SubmissionWorker",
+        target=utils.load_queue,
+        args=(main_queue, submissions, stop_event),
+    )
+    workers.append(submissions_worker)
+
+    # make sure workers end on main thread end
+    atexit.register(lambda e: e.set(), stop_event)
+
+    # let's get it started in here
+    [w.start() for w in workers]
     logger.info("Started nbviewerbot, listening for new comments...")
 
-    for comment in comments:
+    while not stop_event.is_set():
         try:
-            process_comment(comment)
-
+            praw_obj = main_queue.get()
+            process_praw_object(praw_obj)
         except:
-            logger.exception(
-                "Uncaught exception on comment {}, skipping.".format(comment.id)
-                + " Details:"
-            )
+            stop_event.set()
+            logger.exception("Uncaught exception on object, skipping. Details:")
+            raise
+
+        if not all([w.is_alive() for w in workers]):
+            stop_event.set()
+            raise InterruptedError("Praw worker died unexpectedly")
 
 
 # TODO: Add --detach option and status/kill commands for background running

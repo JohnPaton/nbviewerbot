@@ -126,7 +126,7 @@ def setup_logger(console_level=logging.INFO, file_level=logging.DEBUG):
     logger = logging.getLogger("nbviewerbot")
     logger.setLevel(logging.DEBUG)
 
-    fmt = logging.Formatter("%(asctime)s %(levelname)s - %(message)s")
+    fmt = logging.Formatter("%(asctime)s %(levelname)s(%(threadName)s) - %(message)s")
 
     if console_level is not None:
         sh = logging.StreamHandler()
@@ -150,3 +150,27 @@ def pickle_reply_dict():
     resources.LOGGER.info("Saving reply log...")
     with open(resources.REPLY_DICT_PATH, "wb") as h:
         pickle.dump(resources.REPLY_DICT, h)
+
+
+def praw_object_type(praw_obj):
+    """Return the type of the praw object (comment/submission) as a
+    lowercase string."""
+    return type(praw_obj).__name__.lower()
+
+
+def raise_on_exception(e):
+    """Raises exception e"""
+    raise e
+
+
+def load_queue(queue, iterable, stop_event=None):
+    """Put items from iterable into queue as they become available
+
+    Stops when stop_event is set if provided, else continues forever.
+    """
+    for i in iterable:
+        queue.put(i)
+        resources.LOGGER.debug(f"Queued item {i}")
+        if stop_event.is_set():
+            resources.LOGGER.info("Stop signal received, stopping")
+            break
