@@ -11,6 +11,13 @@ import dotenv
 from nbviewerbot import resources, utils, templating
 
 
+_PRAW_EXCEPTIONS = (
+    praw.exceptions.PRAWException,
+    prawcore.exceptions.PrawcoreException,
+    prawcore.exceptions.ResponseException,
+)
+
+
 def get_comment_stream(subreddits):
     """Return the comment stream for a subreddit or list of subreddit names"""
     if type(subreddits) is str:
@@ -27,13 +34,15 @@ def get_comment_stream(subreddits):
 
 @backoff.on_exception(
     backoff.expo,
-    exception=(
-        praw.exceptions.PRAWException,
-        prawcore.exceptions.PrawcoreException,
-        prawcore.exceptions.ResponseException,
-    ),
+    exception=_PRAW_EXCEPTIONS,
+    max_tries=5,
     on_backoff=lambda x: resources.LOGGER.exception(
         "Exception replying to comment {}, sleeping. Details: {}".format(
+            x["args"][0].id, str(x)
+        )
+    ),
+    on_giveup=lambda x: resources.LOGGER.exception(
+        "Max tries, giving up on comment {}. Details: {}".format(
             x["args"][0].id, str(x)
         )
     ),
@@ -104,9 +113,7 @@ def main(subreddits):
 
         except:
             logger.exception(
-                "Uncaught exception on comment {}, skipping.".format(
-                    comment.id
-                )
+                "Uncaught exception on comment {}, skipping.".format(comment.id)
                 + " Details:"
             )
 
@@ -119,9 +126,7 @@ def main(subreddits):
     "-v",
     is_flag=True,
     default=False,
-    help="Show DEBUG logs (always available at "
-    + resources.LOGFILE_PATH
-    + ")",
+    help="Show DEBUG logs (always available at " + resources.LOGFILE_PATH + ")",
 )
 @click.option(
     "--quiet",
@@ -181,9 +186,7 @@ def cli(ctx, verbose, quiet, subreddit_set, env):
 def show_subreddits():
     """Show subreddits used by the -s options"""
     msg_test = pformat(list(sorted(resources.SUBREDDITS_TEST)), compact=True)
-    msg_relevant = pformat(
-        list(sorted(resources.SUBREDDITS_RELEVANT)), compact=True
-    )
+    msg_relevant = pformat(list(sorted(resources.SUBREDDITS_RELEVANT)), compact=True)
     msg_all = pformat(list(sorted(resources.SUBREDDITS_ALL)), compact=True)
 
     click.echo("Subreddits followed by nbviewerbot -s options:")
