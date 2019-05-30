@@ -11,10 +11,12 @@ import dotenv
 from nbviewerbot import resources, utils, templating
 
 
+# Exceptions that we will retry on
 _PRAW_EXCEPTIONS = (
     praw.exceptions.PRAWException,
     prawcore.exceptions.PrawcoreException,
     prawcore.exceptions.ResponseException,
+    prawcore.exceptions.RequestException,
 )
 
 
