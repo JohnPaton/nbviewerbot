@@ -170,7 +170,7 @@ def load_queue(queue, iterable, stop_event=None):
     """
     for i in iterable:
         queue.put(i)
-        resources.LOGGER.debug(f"Queued item {i}")
+        resources.LOGGER.debug("Queued item {}".format(i))
         if stop_event.is_set():
             resources.LOGGER.info("Stop signal received, stopping")
             break
