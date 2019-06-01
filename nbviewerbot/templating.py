@@ -1,3 +1,5 @@
+import urllib
+
 from nbviewerbot import utils, resources
 
 
@@ -5,6 +7,36 @@ def nbviewer_url(url):
     """Return the nbviewer url for the given url."""
     link = utils.get_notebook_path(url)
     return resources.NBVIEWER_URL_TEMPLATE.format(link)
+
+
+def binder_url(repo, branch="master", filepath=None):
+    """
+    Build a binder url. If filepath is provided, the url will be for
+    the specific file.
+
+    Parameters
+    ----------
+    repo: str
+        The repository in the form "username/reponame"
+    branch: str, optional
+        The branch, default "master"
+    filepath: str, optional
+        The path to a file in the repo, e.g. dir1/dir2/notebook.ipynb
+
+    Returns
+    -------
+    str
+        A binder url that will launch a notebook server
+    """
+
+    if filepath is not None:
+        fpath = urllib.parse.quote(filepath, safe="")
+        return resources.BINDER_URL_TEMPLATE_WITH_FILEPATH.format(
+            repo, branch, filepath
+        )
+
+    else:
+        return resources.BINDER_URL_TEMPLATE_NO_FILEPATH.format(repo, branch)
 
 
 def comment_single_link(url):

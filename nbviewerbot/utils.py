@@ -68,6 +68,36 @@ def get_notebook_path(url):
     return parsed.netloc.replace("www.", "") + parsed.path
 
 
+def get_github_info(url):
+    """
+    Get the repo, branch and (optional) filepath from a github url
+
+    Parameters
+    ----------
+    url
+
+    Returns
+    -------
+    repo, branch, filepath (if present)
+    """
+    parsed = parse_url_if_not_parsed(url)
+    assert "github" in parsed.netloc.lower(), "Must be a github url"
+    assert len(parsed.path.split("/")) >= 3, "Must be at least a path to a repo"
+
+    path_elements = parsed.path.split("/")[1:]  # drop the first slash
+
+    repo = "/".join(path_elements[1:3])
+    branch = "master"
+    filepath = None
+
+    if len(path_elements) >= 5:
+        branch = path_elements[4]
+    if len(path_elements) >= 6:
+        filepath = "/".join(path_elements[5:])
+
+    return repo, branch, filepath
+
+
 def get_all_links(html):
     """
     Parse HTML and extract all http(s) hyperlink destinations
