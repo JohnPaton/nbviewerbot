@@ -72,6 +72,7 @@ def load_reddit():
 
 
 # Templates (for use with string.format)
+# TODO: Convert these all to string.Template
 NBVIEWER_URL_TEMPLATE = "https://nbviewer.jupyter.org/url/{}"
 
 BINDER_URL_TEMPLATE_NO_FILEPATH = "https://mybinder.org/v2/gh/{}/{}"
@@ -93,9 +94,13 @@ _comment_footer = """
 COMMENT_TEMPLATE_SINGLE = (
     """
 I see you've posted a GitHub link to a Jupyter Notebook! GitHub doesn't 
-render Jupyter Notebooks on mobile, so here is an 
-[nbviewer](https://nbviewer.jupyter.org/) link to the notebook 
-for mobile viewing:
+render large Jupyter Notebooks, so just in case, here is an 
+[nbviewer](https://nbviewer.jupyter.org/) link to the notebook:
+
+{}
+
+Want to run the code yourself? Here is a [binder](https://mybinder.org/) 
+link to start your own Jupyter server and try it out!
 
 {}
 
@@ -106,9 +111,13 @@ for mobile viewing:
 COMMENT_TEMPLATE_MULTI = (
     """
 I see you've posted GitHub links to Jupyter Notebooks! GitHub doesn't 
-render Jupyter Notebooks on mobile, so here are 
-[nbviewer](https://nbviewer.jupyter.org/) links to the notebooks
-for mobile viewing:
+render large Jupyter Notebooks, so just in case here are 
+[nbviewer](https://nbviewer.jupyter.org/) links to the notebooks:
+
+{}
+
+Want to run the code yourself? Here are [binder](https://mybinder.org/) 
+links to start your own Jupyter server!
 
 {}
 

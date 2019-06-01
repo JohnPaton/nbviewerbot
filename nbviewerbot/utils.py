@@ -84,7 +84,7 @@ def get_github_info(url):
     assert "github" in parsed.netloc.lower(), "Must be a github url"
     assert len(parsed.path.split("/")) >= 3, "Must be at least a path to a repo"
 
-    path_elements = parsed.path.split("/")[1:]  # drop the first slash
+    path_elements = parsed.path.split("/")  # drop the first slash
 
     repo = "/".join(path_elements[1:3])
     branch = "master"

@@ -32,7 +32,7 @@ def binder_url(repo, branch="master", filepath=None):
     if filepath is not None:
         fpath = urllib.parse.quote(filepath, safe="")
         return resources.BINDER_URL_TEMPLATE_WITH_FILEPATH.format(
-            repo, branch, filepath
+            repo, branch, fpath
         )
 
     else:
@@ -41,15 +41,22 @@ def binder_url(repo, branch="master", filepath=None):
 
 def comment_single_link(url):
     """Construct the single link bot reply comment for the given url"""
-    link = nbviewer_url(url)
-    return resources.COMMENT_TEMPLATE_SINGLE.format(link)
+    nbv_link = nbviewer_url(url)
+    binder_link = binder_url(*utils.get_github_info(url))
+    return resources.COMMENT_TEMPLATE_SINGLE.format(nbv_link, binder_link)
 
 
 def comment_multi_link(urls):
     """Construct the multi-link bot comment reply for the given list of urls"""
-    links = [nbviewer_url(url) for url in urls]
-    links_string = "\n\n".join(links)
-    return resources.COMMENT_TEMPLATE_MULTI.format(links_string)
+    nbv_links = [nbviewer_url(url) for url in urls]
+    nbv_links_string = "\n\n".join(nbv_links)
+
+    binder_links = [binder_url(*utils.get_github_info(url)) for url in urls]
+    binder_links_string = "\n\n".join(binder_links)
+
+    return resources.COMMENT_TEMPLATE_MULTI.format(
+        nbv_links_string, binder_links_string
+    )
 
 
 def comment(urls):
