@@ -38,27 +38,6 @@ def get_streams(subreddits):
     return sub.stream.comments(), sub.stream.submissions()
 
 
-def get_comment_jupyter_links(comment):
-    """Extract jupyter lins from a comment, if any"""
-    html = comment.body_html
-    jupy_links = utils.get_github_jupyter_links(html)
-    return jupy_links
-
-
-def get_submission_jupyter_links(submission):
-    """Extract jupyer links from a submission, if any"""
-    jupy_links = []
-    if submission.selftext_html is not None:
-        # self post, read html
-        html = submission.selftext_html
-        jupy_links += utils.get_github_jupyter_links(html)
-
-    if utils.is_github_jupyter_url(submission.url):
-        jupy_links += [submission.url]
-
-    return jupy_links
-
-
 @backoff.on_exception(
     backoff.expo,
     exception=_PRAW_EXCEPTIONS,
@@ -104,9 +83,9 @@ def process_praw_object(praw_obj):
 
     jupy_links = []
     if isinstance(praw_obj, praw.models.Comment):
-        jupy_links = get_comment_jupyter_links(praw_obj)
+        jupy_links = utils.get_comment_jupyter_links(praw_obj)
     elif isinstance(praw_obj, praw.models.Submission):
-        jupy_links = get_submission_jupyter_links(praw_obj)
+        jupy_links = utils.get_submission_jupyter_links(praw_obj)
 
     if jupy_links:
         logger.info("Found Jupyter link(s) in {} {}".format(obj_type, obj_id))

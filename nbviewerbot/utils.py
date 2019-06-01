@@ -40,9 +40,7 @@ def is_github_jupyter_url(url):
     """
     parsed = parse_url_if_not_parsed(url)
 
-    return (
-        "github" in parsed.netloc.lower() and ".ipynb" in parsed.path.lower()
-    )
+    return "github" in parsed.netloc.lower() and ".ipynb" in parsed.path.lower()
 
 
 def get_notebook_path(url):
@@ -104,6 +102,27 @@ def get_github_jupyter_links(html):
     """
     links = get_all_links(html)
     return [link for link in links if is_github_jupyter_url(link)]
+
+
+def get_comment_jupyter_links(comment):
+    """Extract jupyter lins from a comment, if any"""
+    html = comment.body_html
+    jupy_links = get_github_jupyter_links(html)
+    return jupy_links
+
+
+def get_submission_jupyter_links(submission):
+    """Extract jupyer links from a submission, if any"""
+    jupy_links = []
+    if submission.selftext_html is not None:
+        # self post, read html
+        html = submission.selftext_html
+        jupy_links += get_github_jupyter_links(html)
+
+    if is_github_jupyter_url(submission.url):
+        jupy_links += [submission.url]
+
+    return jupy_links
 
 
 def setup_logger(console_level=logging.INFO, file_level=logging.DEBUG):
