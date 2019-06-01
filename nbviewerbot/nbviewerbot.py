@@ -63,7 +63,7 @@ def get_submission_jupyter_links(submission):
     backoff.expo,
     exception=_PRAW_EXCEPTIONS,
     max_tries=5,
-    on_backoff=lambda x: resources.LOGGER.exception(
+    on_backoff=lambda x: resources.LOGGER.warning(
         "Exception replying to comment {}, sleeping. Details: {}".format(
             x["args"][0].id, str(x)
         )
