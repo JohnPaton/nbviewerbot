@@ -30,7 +30,7 @@ def binder_url(repo, branch="master", filepath=None):
     """
 
     if filepath is not None:
-        fpath = urllib.parse.quote(filepath, safe="")
+        fpath = urllib.parse.quote(filepath, safe="%")
         return resources.BINDER_URL_TEMPLATE_WITH_FILEPATH.format(
             repo, branch, fpath
         )
