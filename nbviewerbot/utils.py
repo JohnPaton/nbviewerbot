@@ -152,6 +152,9 @@ def get_submission_jupyter_links(submission):
     if is_github_jupyter_url(submission.url):
         jupy_links += [submission.url]
 
+    # dedupe
+    jupy_links = list(dict.fromkeys(jupy_links))
+
     return jupy_links
 
 
