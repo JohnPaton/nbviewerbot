@@ -4,25 +4,31 @@
 
 # nbviewerbot
 
-A Reddit bot to convert GitHub Jupyter Notebook URLs to [nbviewer](https://nbviewer.jupyter.org/) links for mobile notebook rendering.
+A Reddit bot to convert GitHub Jupyter Notebook URLs to [nbviewer](https://nbviewer.jupyter.org/) links for more consistent notebook rendering, and to generate [binder](https://mybinder.org/) links to run notebooks yourself.
 
 > *jd_paton*:
 >
 > Check out my cool notebook: https://github.com/JohnPaton/numpy-neural-networks/blob/master/01-single-layer-perceptron.ipynb
 >
 >> *nbviewerbot*:
->>
+>> 
 >> I see you've posted a GitHub link to a Jupyter Notebook! GitHub doesn't 
-render Jupyter Notebooks on mobile, so here is an 
-[nbviewer](https://nbviewer.jupyter.org/) link to the notebook 
-for mobile viewing:
+>> render large Jupyter Notebooks, so just in case, here is an 
+>> [nbviewer](https://nbviewer.jupyter.org/) link to the notebook:
 >> 
 >> https://nbviewer.jupyter.org/url/github.com/JohnPaton/numpy-neural-networks/blob/master/01-single-layer-perceptron.ipynb
 >> 
->> -----
+>> Want to run the code yourself? Here is a [binder](https://mybinder.org/) 
+>> link to start your own Jupyter server and try it out!
 >> 
->> I am a bot. [Feedback](https://www.reddit.com/message/compose/?to=jd_paton) | [GitHub](https://github.com/JohnPaton/nbviewerbot) | [Author](https://johnpaton.net/)
-
+>> https://mybinder.org/v2/gh/JohnPaton/numpy-neural-networks/master?filepath=01-single-layer-perceptron.ipynb
+>> 
+>> ------
+>> 
+>> I am a bot. 
+>> [Feedback](https://www.reddit.com/message/compose/?to=jd_paton) | 
+>> [GitHub](https://github.com/JohnPaton/nbviewerbot) |
+>> [Author](https://johnpaton.net/)
 
 ## Installation
 
@@ -43,20 +49,22 @@ Once you have `pip` installed `nbviewerbot`, you can run it from the command lin
 
 ```
 $ nbviewerbot
-2018-08-06 18:35:43,729 INFO - Successfully authenticated with Reddit
-2018-08-06 18:35:43,729 INFO - Streaming comments from algotrading+analytics+askmath+askprogramming+aws+beginnerprojects+bigdata+bioinformatics+businessintelligence+codeprojects+computervision+coolgithubprojects+cs231n+datacleaning+dataisbeautiful+datamining+datascience+datasciencenews+deepdream+deeplearners+deeplearning+github+ipynb+ipython+jupyter+jupyternotebooks+languagetechnology+learnmachinelearning+learnprogramming+learnpython+machinelearning+mlquestions+nlp+programming+pyfinance+pystats+python+pythontips+rstats+science+simulate+statistics+tensorflow
-2018-08-06 18:35:43,730 INFO - Started nbviewerbot, listening for new comments...
-2018-08-06 19:48:17,441 INFO - Found Jupyter link(s) in comment e3ponr7
-2018-08-06 19:48:18,330 INFO - Replied to e3ponr7 with new comment e3poo22
+2019-08-25 13:26:43,502 INFO(MainThread) - Successfully authenticated with Reddit
+2019-08-25 13:26:43,503 INFO(MainThread) - Streaming comments from algotrading+analytics+apachespark+arcgis+artificial+askmath+askprogramming+aws+beginnerprojects+bigdata+bioinformatics+businessintelligence+codeprojects+computerscience+computervision+coolgithubprojects+cs231n+cscareerquestions+datacleaning+datamining+datascience+datasciencenews+deepdream+deeplearners+deeplearning+gis+github+investing+ipynb+ipython+jupyter+jupyternotebooks+languagetechnology+learnmachinelearning+learnprogramming+learnpython+machinelearning+mlquestions+nlp+physics+programming+pyfinance+pystats+python+pythontips+qgis+reinforcementlearning+rstats+science+simulate+statistics+tensorflow+testingground4bots+bottestingplace+bottesting+bottest
+2019-08-25 13:26:43,522 INFO(MainThread) - Started nbviewerbot, listening for new comments...
+2019-08-25 13:26:46,077 INFO(MainThread) - Found Jupyter link(s) in comment ey29inb
+2019-08-25 13:26:46,376 INFO(MainThread) - Replied to comment ey29inb with new comment ey2ab70
 ```
 
 You can stop the bot again by pressing `ctrl+C`. This will interrupt the loop, prompting the bot to save its state (preventing it from replying to the same comments again on next startup) and exit.
 
 ```
 ^C
-Aborted!
-2018-08-06 20:09:43,520 INFO - Saving reply log...
-2018-08-06 20:09:43,522 INFO - Exited nbviewerbot
+2019-08-25 14:23:40,268 WARNING(MainThread) - Stopping nbviewerbot...
+2019-08-25 14:23:46,928 INFO(CommentWorker) - Stop signal received, stopping
+2019-08-25 14:23:47,109 INFO(SubmissionWorker) - Stop signal received, stopping
+2019-08-25 14:23:47,113 INFO(Dummy-1) - Saving reply log...
+2019-08-25 14:23:47,169 INFO(Dummy-1) - Exited nbviewerbot
 ```
 
 To view the available subreddit lists, use the command `nbviewerbot subreddits`. The default list is the testing list plus a [list of relevant subreddits](https://github.com/JohnPaton/nbviewerbot/blob/master/nbviewerbot/resources.d/subreddits.txt). Additions to this list would be welcome, feel free to open a PR!
