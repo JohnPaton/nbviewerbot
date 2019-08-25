@@ -2,6 +2,7 @@ import logging
 import atexit
 from pprint import pformat
 import multiprocessing.dummy as mp
+import queue
 import sys
 
 import click
@@ -144,8 +145,10 @@ def main(subreddits):
 
     while not stop_event.is_set():
         try:
-            praw_obj = main_queue.get()
+            praw_obj = main_queue.get(timeout=1)
             process_praw_object(praw_obj)
+        except queue.Empty:
+            pass  # no problems, just nothing in the queue
         except:
             stop_event.set()
             logger.exception("Uncaught exception on object, skipping. Details:")
