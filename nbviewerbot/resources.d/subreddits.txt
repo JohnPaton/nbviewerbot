@@ -1,5 +1,8 @@
 algotrading
 analytics
+apachespark
+arcgis
+artificial
 askmath
 askprogramming
 aws
@@ -8,9 +11,11 @@ bigdata
 bioinformatics
 businessintelligence
 codeprojects
+computerscience
 computervision
 coolgithubprojects
 cs231n
+cscareerquestions
 datacleaning
 datamining
 datascience
@@ -18,6 +23,7 @@ datasciencenews
 deepdream
 deeplearners
 deeplearning
+gis
 github
 investing
 ipynb
@@ -31,11 +37,14 @@ learnpython
 machinelearning
 mlquestions
 nlp
+physics
 programming
 pyfinance
 pystats
 python
 pythontips
+qgis
+reinforcementlearning
 rstats
 science
 simulate
