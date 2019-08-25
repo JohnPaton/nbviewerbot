@@ -36,7 +36,7 @@ def get_streams(subreddits):
 
     resources.LOGGER.info("Streaming comments from {}".format(subreddit_str))
 
-    return sub.stream.comments(), sub.stream.submissions()
+    return sub.stream.comments(pause_after=0), sub.stream.submissions(pause_after=0)
 
 
 @backoff.on_exception(

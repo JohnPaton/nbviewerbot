@@ -219,10 +219,16 @@ def load_queue(queue, iterable, stop_event=None):
     """Put items from iterable into queue as they become available
 
     Stops when stop_event is set if provided, else continues forever.
+
+    If the item is None, it will be skipped. This can be used to more
+    regularly check for stop_event being set (pass None though the
+    iterator to check the event and then continue iterating).
     """
-    for i in iterable:
-        queue.put(i)
-        resources.LOGGER.debug("Queued item {}".format(i))
-        if stop_event.is_set():
-            resources.LOGGER.info("Stop signal received, stopping")
-            break
+    while not stop_event.is_set():
+        for i in iterable:
+            if i is None:
+                break
+            queue.put(i)
+            resources.LOGGER.debug("Queued item {}".format(i))
+
+    resources.LOGGER.info("Stop signal received, stopping")
