@@ -154,6 +154,9 @@ def main(subreddits):
             process_praw_object(praw_obj)
         except queue.Empty:
             pass  # no problems, just nothing in the queue
+        except KeyboardInterrupt:
+            stop_event.set()
+            logger.warn("Stopping nbviewerbot...")
         except:
             stop_event.set()
             logger.exception("Uncaught exception on object, skipping. Details:")
