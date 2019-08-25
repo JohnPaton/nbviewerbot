@@ -70,13 +70,19 @@ class TestGetAllLinks:
         assert links == []
 
     def test_links(self):
-        html = "some text <a href=http://www.example.com> also" " <a href=http://www.github.com>"
+        html = (
+            "some text <a href=http://www.example.com> also"
+            " <a href=http://www.github.com>"
+        )
         links = utils.get_all_links(html)
         expected = ["http://www.example.com", "http://www.github.com"]
         assert links == expected
 
     def test_hash(self):
-        html = "some text <a href=http://www.example.com> also" " <a href=#secion1>"
+        html = (
+            "some text <a href=http://www.example.com> also"
+            " <a href=#secion1>"
+        )
         links = utils.get_all_links(html)
         expected = ["http://www.example.com"]
         assert links == expected
@@ -89,18 +95,28 @@ class TestGetGithubJupyterLinks:
         assert links == []
 
     def test_links(self):
-        html = "some text <a href=http://www.example.com> also" " <a href=http://www.github.com/username/repo/test.ipynb>"
+        html = (
+            "some text <a href=http://www.example.com> also"
+            " <a href=http://www.github.com/username/repo/test.ipynb>"
+        )
         links = utils.get_github_jupyter_links(html)
         expected = ["http://www.github.com/username/repo/test.ipynb"]
         assert links == expected
 
     def test_hash(self):
-        html = "some text " "<a href=http://www.github.com/username/repo/test.ipynb> also" " <a href=#secion1>"
+        html = (
+            "some text "
+            "<a href=http://www.github.com/username/repo/test.ipynb> also"
+            " <a href=#secion1>"
+        )
         links = utils.get_github_jupyter_links(html)
         expected = ["http://www.github.com/username/repo/test.ipynb"]
         assert links == expected
 
     def test_other_links(self):
-        html = "some text <a href=http://www.example.com> also" " <a href=http://www.github.com>"
+        html = (
+            "some text <a href=http://www.example.com> also"
+            " <a href=http://www.github.com>"
+        )
         links = utils.get_github_jupyter_links(html)
         assert links == []

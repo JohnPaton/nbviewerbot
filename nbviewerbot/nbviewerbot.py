@@ -36,7 +36,10 @@ def get_streams(subreddits):
 
     resources.LOGGER.info("Streaming comments from {}".format(subreddit_str))
 
-    return sub.stream.comments(pause_after=2), sub.stream.submissions(pause_after=2)
+    return (
+        sub.stream.comments(pause_after=2),
+        sub.stream.submissions(pause_after=2),
+    )
 
 
 @backoff.on_exception(
@@ -63,7 +66,9 @@ def post_reply(praw_obj, text):
     reply = praw_obj.reply(text)
     obj_type = utils.praw_object_type(praw_obj)
     resources.LOGGER.info(
-        "Replied to {} {} with new comment {}".format(obj_type, praw_obj.id, reply.id)
+        "Replied to {} {} with new comment {}".format(
+            obj_type, praw_obj.id, reply.id
+        )
     )
     return reply
 
@@ -227,7 +232,9 @@ def cli(ctx, verbose, quiet, subreddit_set, env):
 def show_subreddits():
     """Show subreddits used by the -s options"""
     msg_test = pformat(list(sorted(resources.SUBREDDITS_TEST)), compact=True)
-    msg_relevant = pformat(list(sorted(resources.SUBREDDITS_RELEVANT)), compact=True)
+    msg_relevant = pformat(
+        list(sorted(resources.SUBREDDITS_RELEVANT)), compact=True
+    )
     msg_all = pformat(list(sorted(resources.SUBREDDITS_ALL)), compact=True)
 
     click.echo("Subreddits followed by nbviewerbot -s options:")

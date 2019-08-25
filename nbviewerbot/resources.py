@@ -77,7 +77,9 @@ NBVIEWER_URL_TEMPLATE = "https://nbviewer.jupyter.org/url/{}"
 
 BINDER_URL_TEMPLATE_NO_FILEPATH = "https://mybinder.org/v2/gh/{}/{}"
 
-BINDER_URL_TEMPLATE_WITH_FILEPATH = "https://mybinder.org/v2/gh/{}/{}?filepath={}"
+BINDER_URL_TEMPLATE_WITH_FILEPATH = (
+    "https://mybinder.org/v2/gh/{}/{}?filepath={}"
+)
 
 
 _comment_footer = """

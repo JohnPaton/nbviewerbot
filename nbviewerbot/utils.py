@@ -178,7 +178,9 @@ def setup_logger(console_level=logging.INFO, file_level=logging.DEBUG):
     logger = logging.getLogger("nbviewerbot")
     logger.setLevel(logging.DEBUG)
 
-    fmt = logging.Formatter("%(asctime)s %(levelname)s(%(threadName)s) - %(message)s")
+    fmt = logging.Formatter(
+        "%(asctime)s %(levelname)s(%(threadName)s) - %(message)s"
+    )
 
     if console_level is not None:
         sh = logging.StreamHandler()
