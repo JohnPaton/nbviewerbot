@@ -99,9 +99,12 @@ def process_praw_object(praw_obj):
         reply_text = templating.comment(jupy_links)
 
         # use function for posting comment to catch rate limit exceptions
-        reply = post_reply(praw_obj, reply_text)
-
-        resources.REPLY_DICT[obj_id] = reply
+        try:
+            reply = post_reply(praw_obj, reply_text)
+            resources.REPLY_DICT[obj_id] = reply
+        except prawcore.exceptions.Forbidden:
+            # Ddon't crash if we get banned from a sub
+            resources.REPLY_DICT[obj_id] = 'FORBIDDEN'
 
 
 def main(subreddits):
