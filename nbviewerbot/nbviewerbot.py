@@ -104,7 +104,7 @@ def process_praw_object(praw_obj):
             resources.REPLY_DICT[obj_id] = reply
         except prawcore.exceptions.Forbidden:
             # Ddon't crash if we get banned from a sub
-            resources.REPLY_DICT[obj_id] = 'FORBIDDEN'
+            resources.REPLY_DICT[obj_id] = "FORBIDDEN"
 
 
 def main(subreddits):
