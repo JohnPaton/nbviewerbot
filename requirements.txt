@@ -14,7 +14,7 @@ praw==6.0.0
 prawcore==1.0.0
 py==1.5.4
 pytest==3.7.1
-requests==2.19.1
+requests==2.20.0
 six==1.11.0
 urllib3==1.23
 python-dotenv==0.10.2
