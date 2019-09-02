@@ -87,16 +87,16 @@ def already_replied(praw_obj, username):
     bool
 
     """
-    replies = []
-
     if isinstance(praw_obj, praw.models.Comment):
         praw_obj.refresh()  # https://github.com/praw-dev/praw/issues/413
         replies = praw_obj.replies
     elif isinstance(praw_obj, praw.models.Submission):
         replies = praw_obj.comments
+    else:
+        raise TypeError("praw_obj should be a Comment or Submission")
 
     for r in replies:
-        if r.author.name.lower() == username.lower:
+        if r.author.name.lower() == username.lower():
             return True
 
     return False
