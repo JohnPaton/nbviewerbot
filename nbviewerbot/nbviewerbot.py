@@ -90,6 +90,7 @@ def already_replied(praw_obj, username):
     replies = []
 
     if isinstance(praw_obj, praw.models.Comment):
+        praw_obj.refresh()  # https://github.com/praw-dev/praw/issues/413
         replies = praw_obj.replies
     elif isinstance(praw_obj, praw.models.Submission):
         replies = praw_obj.comments
@@ -112,7 +113,7 @@ def process_praw_object(praw_obj, username):
 
     # don't reply to comments more than once
     if already_replied(praw_obj, username):
-        logger.debug("Skipping {} {}, already replied".format(obj_type, obj_id))
+        logger.info("Skipping {} {}, already replied".format(obj_type, obj_id))
         return
 
     jupy_links = []
