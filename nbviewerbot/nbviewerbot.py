@@ -96,7 +96,7 @@ def already_replied(praw_obj, username):
         replies = praw_obj.comments
 
     for r in replies:
-        if r.author.name.lower == username.lower:
+        if r.author.name.lower() == username.lower:
             return True
 
     return False
