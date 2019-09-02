@@ -1,6 +1,7 @@
 import urllib
 import logging
 import pickle
+from queue import Full
 
 from bs4 import BeautifulSoup
 
@@ -219,9 +220,15 @@ def load_queue(queue, iterable, stop_event=None):
     """
     while not stop_event.is_set():
         for i in iterable:
-            if i is None:
+            if i is None or stop_event.is_set():
                 break
-            queue.put(i)
-            resources.LOGGER.debug("Queued item {}".format(i))
+
+            while not stop_event.is_set():
+                try:
+                    queue.put(i, timeout=1.0)
+                    resources.LOGGER.debug("Queued item {}".format(i))
+                    break
+                except Full:
+                    resources.LOGGER.warn("Destination queue is full")
 
     resources.LOGGER.info("Stop signal received, stopping")
