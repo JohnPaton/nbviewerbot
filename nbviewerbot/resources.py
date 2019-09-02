@@ -67,7 +67,9 @@ def load_reddit():
     """
     kwargs = get_reddit_auth_kwargs()
     reddit = praw.Reddit(**kwargs)
-    LOGGER.info("Successfully authenticated with Reddit")
+    LOGGER.info(
+        f"Successfully authenticated with Reddit as {reddit.user.mer().name}"
+    )
     return reddit
 
 
