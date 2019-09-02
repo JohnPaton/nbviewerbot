@@ -131,14 +131,6 @@ links to start your own Jupyter server!
 _url_rx = "^http.*"
 URL_RX = re.compile(_url_rx)
 
-# Activity tracking
-REPLY_DICT_PATH = os.path.join(SRC_DIR, "reply_dict.pkl")
-try:
-    with open(REPLY_DICT_PATH, "rb") as h:
-        REPLY_DICT = pickle.load(h)
-except FileNotFoundError:
-    REPLY_DICT = {}
-
 # Subreddit lists
 SUBREDDITS_TEST = [
     "testingground4bots",

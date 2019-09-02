@@ -73,7 +73,35 @@ def post_reply(praw_obj, text):
     return reply
 
 
-def process_praw_object(praw_obj):
+def already_replied(praw_obj, username):
+    """
+    Check if a user has replied to an object
+
+    Parameters
+    ----------
+    praw_obj (Comment or Submission): The object in question
+    username (str): The username to check
+
+    Returns
+    -------
+    bool
+
+    """
+    replies = []
+
+    if isinstance(praw_obj, praw.models.Comment):
+        replies = praw_obj.replies
+    elif isinstance(praw_obj, praw.models.Submission):
+        replies = praw_obj.comments
+
+    for r in replies:
+        if r.author.name.lower == username.lower:
+            return True
+
+    return False
+
+
+def process_praw_object(praw_obj, username):
     """Check a praw object for Jupyter GitHub links and reply if
     haven't already."""
     logger = resources.LOGGER
@@ -83,7 +111,7 @@ def process_praw_object(praw_obj):
     logger.debug("Processing {} {}".format(obj_type, obj_id))
 
     # don't reply to comments more than once
-    if obj_id in resources.REPLY_DICT:
+    if already_replied(praw_obj, username):
         logger.debug("Skipping {} {}, already replied".format(obj_type, obj_id))
         return
 
@@ -100,8 +128,7 @@ def process_praw_object(praw_obj):
 
         # use function for posting comment to catch rate limit exceptions
         try:
-            reply = post_reply(praw_obj, reply_text)
-            resources.REPLY_DICT[obj_id] = reply
+            post_reply(praw_obj, reply_text)
         except prawcore.exceptions.Forbidden:
             # Ddon't crash if we get banned from a sub
             resources.REPLY_DICT[obj_id] = "FORBIDDEN"
@@ -120,7 +147,11 @@ def main(subreddits):
     """
 
     logger = resources.LOGGER
+
+    reddit = resources.load_reddit()
+    username = reddit.user.me().name
     comments, submissions = get_streams(subreddits)
+
     main_queue = mp.Queue(1024)
     stop_event = mp.Event()  # for stopping workers
 
@@ -154,7 +185,7 @@ def main(subreddits):
     while not stop_event.is_set():
         try:
             praw_obj = main_queue.get(timeout=1)
-            process_praw_object(praw_obj)
+            process_praw_object(praw_obj, username)
         except queue.Empty:
             pass  # no problems, just nothing in the queue
         except KeyboardInterrupt:
