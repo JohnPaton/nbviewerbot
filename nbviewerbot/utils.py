@@ -197,15 +197,6 @@ def setup_logger(console_level=logging.INFO, file_level=logging.DEBUG):
     return logger
 
 
-def pickle_reply_dict():
-    """
-    Pickle resources.REPLY_DICT to resources.REPLY_DICT_PATH.
-    """
-    resources.LOGGER.info("Saving reply log...")
-    with open(resources.REPLY_DICT_PATH, "wb") as h:
-        pickle.dump(resources.REPLY_DICT, h)
-
-
 def praw_object_type(praw_obj):
     """Return the type of the praw object (comment/submission) as a
     lowercase string."""

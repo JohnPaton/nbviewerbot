@@ -131,7 +131,7 @@ def process_praw_object(praw_obj, username):
             post_reply(praw_obj, reply_text)
         except prawcore.exceptions.Forbidden:
             # Ddon't crash if we get banned from a sub
-            resources.REPLY_DICT[obj_id] = "FORBIDDEN"
+            return
 
 
 def main(subreddits):
@@ -157,7 +157,6 @@ def main(subreddits):
 
     # save the reply dict when the script exits
     atexit.register(lambda: logger.info("Exited nbviewerbot"))
-    atexit.register(utils.pickle_reply_dict)
 
     # create workers to add praw objects to the queue
     workers = []
