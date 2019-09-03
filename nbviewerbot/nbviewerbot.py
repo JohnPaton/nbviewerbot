@@ -96,6 +96,10 @@ def already_replied(praw_obj, username):
         raise TypeError("praw_obj should be a Comment or Submission")
 
     for r in replies:
+        if r.author is None:
+            # Probably deleted account
+            continue
+
         if r.author.name.lower() == username.lower():
             return True
 
