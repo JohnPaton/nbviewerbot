@@ -88,7 +88,11 @@ def already_replied(praw_obj, username):
 
     """
     if isinstance(praw_obj, praw.models.Comment):
-        praw_obj.refresh()  # https://github.com/praw-dev/praw/issues/413
+        try:
+            praw_obj.refresh()  # https://github.com/praw-dev/praw/issues/413
+        except praw.exceptions.ClientException:
+            # Don't handle comments with missing content
+            return True
         replies = praw_obj.replies
     elif isinstance(praw_obj, praw.models.Submission):
         replies = praw_obj.comments
@@ -115,11 +119,6 @@ def process_praw_object(praw_obj, username):
 
     logger.debug("Processing {} {}".format(obj_type, obj_id))
 
-    # don't reply to comments more than once
-    if already_replied(praw_obj, username):
-        logger.info("Skipping {} {}, already replied".format(obj_type, obj_id))
-        return
-
     jupy_links = []
     if isinstance(praw_obj, praw.models.Comment):
         jupy_links = utils.get_comment_jupyter_links(praw_obj)
@@ -127,15 +126,21 @@ def process_praw_object(praw_obj, username):
         jupy_links = utils.get_submission_jupyter_links(praw_obj)
 
     if jupy_links:
-        logger.info("Found Jupyter link(s) in {} {}".format(obj_type, obj_id))
+        # don't reply to comments more than once
+        if already_replied(praw_obj, username):
+            logger.info(
+                "Skipping {} {}, already replied".format(obj_type, obj_id)
+            )
+            return
 
+        logger.info("Found Jupyter link(s) in {} {}".format(obj_type, obj_id))
         reply_text = templating.comment(jupy_links)
 
         # use function for posting comment to catch rate limit exceptions
         try:
             post_reply(praw_obj, reply_text)
         except prawcore.exceptions.Forbidden:
-            # Ddon't crash if we get banned from a sub
+            # Don't crash if we get banned from a sub
             return
 
 
