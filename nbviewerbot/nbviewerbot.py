@@ -51,6 +51,7 @@ def get_streams(subreddits):
             x["args"][0].id, str(x)
         )
     ),
+    giveup=lambda e: isinstance(e, prawcore.exceptions.Forbidden),
     on_giveup=lambda x: resources.LOGGER.exception(
         "Max retries reached, giving up on comment {}. Details: {}".format(
             x["args"][0].id, str(x)
