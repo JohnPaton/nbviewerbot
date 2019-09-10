@@ -42,7 +42,3 @@ class TestSubredditsRelevant:
 
     def test_no_empty_strings(self):
         assert "" not in resources.SUBREDDITS_RELEVANT
-
-
-def test_reply_dict():
-    assert type(resources.REPLY_DICT) is dict

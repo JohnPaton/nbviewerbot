@@ -67,7 +67,11 @@ def load_reddit():
     """
     kwargs = get_reddit_auth_kwargs()
     reddit = praw.Reddit(**kwargs)
-    LOGGER.info("Successfully authenticated with Reddit")
+    LOGGER.info(
+        "Successfully authenticated with Reddit as {}".format(
+            reddit.user.me().name
+        )
+    )
     return reddit
 
 
@@ -130,14 +134,6 @@ links to start your own Jupyter server!
 # Regexes
 _url_rx = "^http.*"
 URL_RX = re.compile(_url_rx)
-
-# Activity tracking
-REPLY_DICT_PATH = os.path.join(SRC_DIR, "reply_dict.pkl")
-try:
-    with open(REPLY_DICT_PATH, "rb") as h:
-        REPLY_DICT = pickle.load(h)
-except FileNotFoundError:
-    REPLY_DICT = {}
 
 # Subreddit lists
 SUBREDDITS_TEST = [

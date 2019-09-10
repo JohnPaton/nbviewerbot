@@ -1,6 +1,7 @@
 import urllib
 import logging
 import pickle
+from queue import Full
 
 from bs4 import BeautifulSoup
 
@@ -197,15 +198,6 @@ def setup_logger(console_level=logging.INFO, file_level=logging.DEBUG):
     return logger
 
 
-def pickle_reply_dict():
-    """
-    Pickle resources.REPLY_DICT to resources.REPLY_DICT_PATH.
-    """
-    resources.LOGGER.info("Saving reply log...")
-    with open(resources.REPLY_DICT_PATH, "wb") as h:
-        pickle.dump(resources.REPLY_DICT, h)
-
-
 def praw_object_type(praw_obj):
     """Return the type of the praw object (comment/submission) as a
     lowercase string."""
@@ -228,9 +220,15 @@ def load_queue(queue, iterable, stop_event=None):
     """
     while not stop_event.is_set():
         for i in iterable:
-            if i is None:
+            if i is None or stop_event.is_set():
                 break
-            queue.put(i)
-            resources.LOGGER.debug("Queued item {}".format(i))
+
+            while not stop_event.is_set():
+                try:
+                    queue.put(i, timeout=1.0)
+                    resources.LOGGER.debug("Queued item {}".format(i))
+                    break
+                except Full:
+                    resources.LOGGER.warn("Destination queue is full")
 
     resources.LOGGER.info("Stop signal received, stopping")
