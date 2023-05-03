@@ -96,3 +96,41 @@ Options:
 Commands:
   subreddits  Show subreddits used by the -s options
 ```
+
+## Orchestration on RaspberryPi
+
+The included [`startup.sh`](./startup.sh) will start a `screen` session for `nbviewerbot` 
+which will keep the bot alive continuously. However, for something a bit more robust to 
+e.g. restarts, systemd should be used instead. The exact details will depend on your 
+installation method, but if you have installed in a virutal environment and want to
+use a `.env` file for your credentials, this should get you started:
+
+```conf
+[Unit]
+Description=nbviewerbot
+
+[Service]
+User=<YOUR_USERNAME>
+Environment="VIRTUAL_ENV=/absolute/path/to/the/virtualenv"
+Environment="DOTENV=/absolute/path/to/the/.env"
+ExecStart=/bin/bash -c 'source "${VIRTUAL_ENV}/bin/activate" && nbviewerbot -e "${DOTENV}"'
+Restart=on-failure
+RestartSec=15  # Avoid getting rate limited by frequent restarts
+
+[Install]
+WantedBy=multi-user.target
+# Don't try to start unless we have network connectivity
+After=network-online.target
+Wants=network-online.target
+```
+
+You should save or link this file to `/etc/systemd/system/nbviewerbot.service`, and then
+enable it with
+
+```console 
+$ sudo systemctl enable nbviewerbot.service
+$ sudo systemctl start nbviewerbot.service
+```
+
+You can check the logs with `systemctl status nbviewerbot.service` or 
+`journalctl -u nbviewerbot.service`.
